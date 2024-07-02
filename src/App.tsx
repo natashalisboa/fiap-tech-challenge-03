@@ -2,9 +2,9 @@ import { useState } from 'react';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import MainContent from './components/Main/MainContent';
-import './App.css';
 import AddTask from './components/pages/AddTask/AddTask';
 import TaskList from './components/pages/TaskList/TaskList';
+import './App.css';
 
 interface Task {
   id: number;
@@ -18,16 +18,20 @@ function App() {
     setTasks([...tasks, { id: tasks.length + 1, name: taskName }]);
   };
 
+  const removeTask = (taskId: number) => {
+    setTasks(tasks.filter(task => task.id !== taskId));
+  };
+
   return (
-    <div className="app-container"> {/* Pode adicionar estilos ou classes conforme necessário */}
-    <Header />
-    <MainContent>
-      <h1>Pendências</h1>
-      <AddTask onAddTask={addTask} />
-      <TaskList tasks={tasks} />
-    </MainContent >
-    <Footer />
-  </div>
+    <div className="app-container">
+      <Header />
+      <MainContent>
+        <h1>Pendências</h1>
+        <AddTask onAddTask={addTask} />
+        <TaskList tasks={tasks} onRemoveTask={removeTask} />
+      </MainContent>
+      <Footer />
+    </div>
   );
 }
 
