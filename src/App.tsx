@@ -22,7 +22,7 @@ function App() {
     <div className="app-container"> {/* Pode adicionar estilos ou classes conforme necessário */}
     <Header />
     <MainContent>
-      <h1>Lista de Tarefas</h1>
+      <h1>Pendências</h1>
       <AddTask onAddTask={addTask} />
       <TaskList tasks={tasks} />
     </MainContent >
