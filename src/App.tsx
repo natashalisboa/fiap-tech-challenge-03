@@ -1,25 +1,33 @@
-import { useState } from 'react';
+import React, { useReducer } from 'react';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import MainContent from './components/Main/MainContent';
 import AddTask from './components/pages/AddTask/AddTask';
 import TaskList from './components/pages/TaskList/TaskList';
+import taskReducer from './reducers/taskReducer';
 import './App.css';
 
 interface Task {
   id: number;
   name: string;
+  completed: boolean;
 }
 
+const initialState = { tasks: [] };
+
 function App() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [state, dispatch] = useReducer(taskReducer, initialState);
 
   const addTask = (taskName: string) => {
-    setTasks([...tasks, { id: tasks.length + 1, name: taskName }]);
+    dispatch({ type: 'ADD_TASK', payload: taskName });
   };
 
   const removeTask = (taskId: number) => {
-    setTasks(tasks.filter(task => task.id !== taskId));
+    dispatch({ type: 'REMOVE_TASK', payload: taskId });
+  };
+
+  const toggleTask = (taskId: number) => {
+    dispatch({ type: 'TOGGLE_TASK', payload: taskId });
   };
 
   return (
@@ -28,7 +36,7 @@ function App() {
       <MainContent>
         <h1>Pendências</h1>
         <AddTask onAddTask={addTask} />
-        <TaskList tasks={tasks} onRemoveTask={removeTask} />
+        <TaskList tasks={state.tasks} onRemoveTask={removeTask} onToggleTask={toggleTask} />
       </MainContent>
       <Footer />
     </div>

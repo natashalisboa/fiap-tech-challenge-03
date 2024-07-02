@@ -2,8 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 interface TaskListProps {
-  tasks: { id: number; name: string }[];
+  tasks: { id: number; name: string; completed: boolean }[];
   onRemoveTask: (taskId: number) => void;
+  onToggleTask: (taskId: number) => void;
 }
 
 const List = styled.ul`
@@ -12,7 +13,7 @@ const List = styled.ul`
   width: 50vw;
 `;
 
-const ListItem = styled.li`
+const ListItem = styled.li<{ completed: boolean }>`
   border: 1px solid #ccc;
   padding: 10px;
   margin: 5px 0;
@@ -20,6 +21,16 @@ const ListItem = styled.li`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  text-decoration: ${({ completed }) => (completed ? 'line-through' : 'none')};
+`;
+
+const TaskInfo = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Checkbox = styled.input`
+  margin-right: 10px;
 `;
 
 const Button = styled.button`
@@ -34,19 +45,39 @@ const Button = styled.button`
   &:hover {
     background-color: #c10e49;
   }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:active {
+    background-color: #c10e49;
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #c10e49;
+  }
 `;
 
-const TaskList: React.FC<TaskListProps> = ({ tasks, onRemoveTask }) => {
+const TaskList: React.FC<TaskListProps> = ({ tasks, onRemoveTask, onToggleTask }) => {
   return (
     <List>
       {tasks.map((task) => (
-        <ListItem key={task.id}>
-          {task.name}
+        <ListItem key={task.id} completed={task.completed}>
+          <TaskInfo>
+            <Checkbox
+              type="checkbox"
+              checked={task.completed}
+              onChange={() => onToggleTask(task.id)}
+            />
+            <span>{task.name}</span>
+          </TaskInfo>
           <Button onClick={() => onRemoveTask(task.id)}>Remover</Button>
         </ListItem>
       ))}
     </List>
   );
-}
+};
 
 export default TaskList;
