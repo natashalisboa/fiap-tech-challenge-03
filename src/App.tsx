@@ -1,14 +1,18 @@
-import React, { useReducer, useEffect } from 'react';
-import api from './api'; // Importando a configuração do Axios
+import  { useReducer, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import api from './api';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import MainContent from './components/Main/MainContent';
-import AddTask from './components/pages/AddTask/AddTask';
-import TaskList from './components/pages/TaskList/TaskList';
+import AddTask from './pages/AddTask/AddTask';
+import TaskList from './pages/TaskList/TaskList';
+import CompletedTasks from './pages/CompletedTasks/CompletedTasks';
+import PendingTasks from './pages/PendingTasks/PendingTasks';
 import taskReducer from './reducers/taskReducer';
+import { Task } from './types';
 import './App.css';
 
-const initialState = { tasks: [] };
+const initialState = { tasks: [] as Task[] };
 
 function App() {
   const [state, dispatch] = useReducer(taskReducer, initialState);
@@ -24,7 +28,7 @@ function App() {
   }, []);
 
   const addTask = (taskName: string) => {
-    api.post('/tasks', { name: taskName, completed: false })
+    api.post('/tasks', { name: taskName, completed: false, completedAt: null })
       .then(response => {
         dispatch({ type: 'ADD_TASK', payload: response.data });
       })
@@ -44,11 +48,16 @@ function App() {
   };
 
   const toggleTask = (taskId: number) => {
-    const task = state.tasks.find(task => task.id === taskId);
+    const task = state.tasks.find((task: Task) => task.id === taskId);
     if (task) {
-      api.put(`/tasks/${taskId}`, { ...task, completed: !task.completed })
-        .then(response => {
-          dispatch({ type: 'TOGGLE_TASK', payload: taskId });
+      const updatedTask: Task = {
+        ...task,
+        completed: !task.completed,
+        completedAt: !task.completed ? new Date() : null
+      };
+      api.put(`/tasks/${taskId}`, updatedTask)
+        .then(() => {
+          dispatch({ type: 'TOGGLE_TASK', payload: updatedTask });
         })
         .catch(error => {
           console.error('Error toggling task:', error);
@@ -57,15 +66,25 @@ function App() {
   };
 
   return (
-    <div className="app-container">
-      <Header />
-      <MainContent>
-        <h1>Pendências</h1>
-        <AddTask onAddTask={addTask} />
-        <TaskList tasks={state.tasks} onRemoveTask={removeTask} onToggleTask={toggleTask} />
-      </MainContent>
-      <Footer />
-    </div>
+    <Router>
+      <div className="app-container">
+        <Header />
+        <MainContent>
+          <Routes>
+            <Route path="/" element={
+              <>
+                <h1>Pendências</h1>
+                <AddTask onAddTask={addTask} />
+                <TaskList tasks={state.tasks} onRemoveTask={removeTask} onToggleTask={toggleTask} />
+              </>
+            } />
+            <Route path="/completed" element={<CompletedTasks tasks={state.tasks} />} />
+            <Route path="/pending" element={<PendingTasks tasks={state.tasks} />} />
+          </Routes>
+        </MainContent>
+        <Footer />
+      </div>
+    </Router>
   );
 }
 
