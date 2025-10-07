@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import api from '../../services/api';
+import { Post } from '../../models/Post';
 
 const FormContainer = styled.div`
   max-width: 800px;
@@ -72,35 +73,79 @@ const Button = styled.button`
   }
 `;
 
-const CreateEditPost: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const [post, setPost] = useState({ title: '', content: '', materia: '', author: '' });
+const Select = styled.select`
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: var(--color-background);
+  color: var(--color-text);
+`;
 
-  const isEditMode = Boolean(id);
+const CreateEditPost: React.FC = () => {
+  const { postId } = useParams<{ postId: string }>();
+  const navigate = useNavigate();
+  const [post, setPost] = useState<Post | null>(null);
+
+  const disciplinas = [
+  { disciplinaId: 1, nome: "HISTÓRIA" },
+  { disciplinaId: 2, nome: "GEOGRAFIA" },
+  { disciplinaId: 3, nome: "MATEMÁTICA" },
+  { disciplinaId: 4, nome: "LÍNGUA PORTUGUESA" },
+  { disciplinaId: 5, nome: "FILOSOFIA" },
+];
+
+  const isEditMode = Boolean(postId);
 
   useEffect(() => {
     if (isEditMode) {
-      api.get(`/posts/${id}`)
+      api.get(`/posts/${postId}`)
         .then(response => {
           setPost(response.data);
         })
         .catch(error => console.error('Erro ao carregar post para edição:', error));
     }
-  }, [id, isEditMode]);
+  }, [postId, isEditMode]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement| HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setPost(prevPost => ({ ...prevPost, [name]: value }));
+      setPost(prevPost => prevPost ? { ...prevPost, [name]: value } : prevPost);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const request = isEditMode ? api.put(`/posts/${id}`, post) : api.post('/posts', post);
+    if (!post) return;
+
+    let autor = post.autor;
+  if (!autor) {
+    const userId = localStorage.getItem('userId');
+    autor = {
+      userId: Number(userId),
+      cargo: { cargoId: 1, tipo: "" },
+      nome: '',
+      email: '',
+      senha: '', 
+      dtCriacao: '',
+      dtAtualizacao: ''
+    };
+  } else if (!autor.cargo) {
+    autor = { ...autor, cargo: { cargoId: 1, tipo: "" } };
+  }
+  const postToSend = {
+    titulo: post.titulo,
+    conteudo: post.conteudo,
+    disciplina: post.disciplina,
+    autor: autor,
+    comentarios: [],
+    dataCriacao: post.dtCriacao,
+    dataAtualizacao: new Date().toISOString(),
+  };
+
+    const request = isEditMode ? api.put(`/posts/${postId}`, postToSend) : api.post('/posts', postToSend);
 
     request
       .then(response => {
-        navigate(`/postdetail/${response.data.id}`);
+        navigate(`/postdetail/${response.data.postId}`);
       })
       .catch(error => console.error('Erro ao salvar post:', error));
   };
@@ -110,20 +155,33 @@ const CreateEditPost: React.FC = () => {
       <FormTitle>{isEditMode ? 'Editar Postagem' : 'Criar Nova Postagem'}</FormTitle>
       <Form onSubmit={handleSubmit}>
         <FormGroup>
-          <Label htmlFor="title">Título</Label>
-          <Input type="text" id="title" name="title" value={post.title} onChange={handleChange} required />
+          <Label htmlFor="titulo">Título</Label>
+          <Input type="text" id="titulo" name="titulo" value={post?.titulo ?? ''} onChange={handleChange} required />
         </FormGroup>
         <FormGroup>
-          <Label htmlFor="materia">Matéria</Label>
-          <Input type="text" id="materia" name="materia" value={post.materia} onChange={handleChange} required />
+          <Label htmlFor="disciplina">Disciplina</Label>
+            <Select id="disciplina" name="disciplina" value={post?.disciplina.disciplinaId ?? ''} 
+            onChange={e => {
+      const disciplinaSelecionada = disciplinas.find(
+        d => d.disciplinaId === Number(e.target.value)
+      );
+      setPost(prevPost =>
+        prevPost
+          ? { ...prevPost, disciplina: disciplinaSelecionada! }
+          : prevPost
+      );
+    }} required>
+          <option value="">Selecione a disciplina</option>
+              {disciplinas.map(disciplina => (
+                <option key={disciplina.disciplinaId} value={disciplina.disciplinaId}>
+                  {disciplina.nome}
+                </option>
+              ))}        
+            </Select>
         </FormGroup>
         <FormGroup>
-          <Label htmlFor="author">Autor</Label>
-          <Input type="text" id="author" name="author" value={post.author} onChange={handleChange} required />
-        </FormGroup>
-        <FormGroup>
-          <Label htmlFor="content">Conteúdo</Label>
-          <TextArea id="content" name="content" value={post.content} onChange={handleChange} required />
+          <Label htmlFor="conteudo">Conteúdo</Label>
+          <TextArea id="conteudo" name="conteudo" value={post?.conteudo ?? ''} onChange={handleChange} required />
         </FormGroup>
         <Button type="submit">{isEditMode ? 'Salvar Alterações' : 'Criar Post'}</Button>
       </Form>
