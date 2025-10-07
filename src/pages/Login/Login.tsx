@@ -21,6 +21,7 @@ const Title = styled.h1`
 
 const Subtitle = styled.p`
   font-size: 16px;
+  text-align: center;
   margin-bottom: 20px;
   color: var(--color-text-secondary);
 `;
@@ -48,6 +49,7 @@ const Input = styled.input`
   border-radius: 4px;
   background-color: var(--color-background);
   color: var(--color-text);
+  box-sizing: border-box; /* Garante que padding e borda não aumentem a largura total */
 `;
 
 const Button = styled.button`
@@ -61,6 +63,7 @@ const Button = styled.button`
   cursor: pointer;
   transition: background-color 0.2s;
 
+  box-sizing: border-box; /* Adicionado para consistência de tamanho com os inputs */
   &:hover {
     opacity: 0.9;
   }
@@ -82,6 +85,7 @@ const ModalContent = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   text-align: center;
+  color: #333; /* Garante que o texto do modal seja legível em fundo branco */
 `;
 
 const ModalButton = styled.button`
