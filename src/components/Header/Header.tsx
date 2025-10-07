@@ -9,7 +9,7 @@ interface HeaderProps {
 
 const HeaderContainer = styled.header`
   display: flex;
-  background-color: #ed145b;
+  background-color: black;
   color: white;
   justify-content: space-between;
   align-items: center;
