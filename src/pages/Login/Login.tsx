@@ -69,9 +69,8 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogin = (event: React.FormEvent) => {
-    event.preventDefault(); // Impede o recarregamento da página
-    // Aqui você poderia adicionar a lógica de autenticação
-    navigate('/postlist'); // Redireciona para a lista de posts
+    event.preventDefault();
+    navigate('/postlist');
   };
 
   return (

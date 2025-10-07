@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import api from '../../api';
-import { Post } from '../PostDetail/Post'; // Importe a interface Post
+import { Post } from '../PostDetail/Post'; 
 
 const PostListContainer = styled.div`
   padding: 20px;

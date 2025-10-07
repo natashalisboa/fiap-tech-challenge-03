@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
-import api from '../../api'; // Certifique-se de que o caminho para a API está correto
-import { Post } from './Post'; // Importe a interface Post
+import api from '../../api'; 
+import { Post } from './Post'; 
 const PostDetailContainer = styled.div`
   padding: 20px;
   max-width: 800px;

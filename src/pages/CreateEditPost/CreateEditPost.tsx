@@ -100,7 +100,6 @@ const CreateEditPost: React.FC = () => {
 
     request
       .then(response => {
-        // Navega para a página de detalhes do post criado/editado
         navigate(`/postdetail/${response.data.id}`);
       })
       .catch(error => console.error('Erro ao salvar post:', error));
