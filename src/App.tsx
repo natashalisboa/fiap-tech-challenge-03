@@ -39,9 +39,9 @@ function App() {
           
             <Route path="/login" element={<Login />} />
             <Route path="/postlist" element={<PostList />} />
-            <Route path="/postdetail/:id" element={<PostDetail />} />
+            <Route path="/postdetail/:postId" element={<PostDetail />} />
             <Route path="/createpost" element={<CreateEditPost />} />
-            <Route path="/editpost/:id" element={<CreateEditPost />} />
+            <Route path="/editpost/:postId" element={<CreateEditPost />} />
           </Routes>
         </MainContent>
       </div>

@@ -1,3 +1,4 @@
+import { Comentarios } from "./Comentario";
 import { Disciplina } from "./Disciplina";
 import { Usuario } from "./Usuario";
 
@@ -9,5 +10,6 @@ export interface Post {
     disciplina: Disciplina;
     dtCriacao: string;
     dtAtualizacao: string;
+    comentarios: Comentarios[];
   }
   

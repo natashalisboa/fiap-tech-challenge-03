@@ -111,8 +111,8 @@ const PostList: React.FC = () => {
       <PostCardsContainer>
         {filteredPosts.map(post => (
           <PostCard key={post.postId}>
-            <PostCardTitle>{post.postId}</PostCardTitle>
-            <PostCardAuthor>Por: {post.autor.nome}</PostCardAuthor>
+            <PostCardTitle>{post.titulo}</PostCardTitle>
+            <PostCardAuthor>Por Prof. {post.autor.nome}</PostCardAuthor>
             <PostCardDescription>
               {post.conteudo.substring(0, 150)}...
             </PostCardDescription>
