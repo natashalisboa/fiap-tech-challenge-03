@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import api from '../../api';
+import api from '../../services/api';
 import { Post } from '../PostDetail/Post'; 
 
 const PostListContainer = styled.div`
