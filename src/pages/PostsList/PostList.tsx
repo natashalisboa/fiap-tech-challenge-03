@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import api from '../../services/api';
-import { Post } from '../PostDetail/Post'; 
+import { Post } from '../../models/Post'; 
 
 const PostListContainer = styled.div`
   padding: 20px;
@@ -92,9 +92,9 @@ const PostList: React.FC = () => {
   }, []);
 
   const filteredPosts = posts.filter(post =>
-    post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.content.toLowerCase().includes(searchTerm.toLowerCase())
+    post.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    post.autor.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    post.conteudo.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -110,13 +110,13 @@ const PostList: React.FC = () => {
       </SearchBar>
       <PostCardsContainer>
         {filteredPosts.map(post => (
-          <PostCard key={post.id}>
-            <PostCardTitle>{post.title}</PostCardTitle>
-            <PostCardAuthor>Por: {post.author}</PostCardAuthor>
+          <PostCard key={post.postId}>
+            <PostCardTitle>{post.postId}</PostCardTitle>
+            <PostCardAuthor>Por: {post.autor.nome}</PostCardAuthor>
             <PostCardDescription>
-              {post.content.substring(0, 150)}...
+              {post.conteudo.substring(0, 150)}...
             </PostCardDescription>
-            <PostCardLink to={`/postdetail/${post.id}`}>
+            <PostCardLink to={`/postdetail/${post.postId}`}>
               Ler Mais
             </PostCardLink>
           </PostCard>

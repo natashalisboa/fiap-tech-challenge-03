@@ -117,6 +117,7 @@ const handleLogin = async (event: React.FormEvent) => {
   try {
     const response = await api.post("/usuario/signin", credentials);
     localStorage.setItem("authToken", response.data.token);
+    localStorage.setItem("adminPermission", response.data.adminPermission);
     navigate('/postlist');
   } catch (error) {
     setShowModal(true);

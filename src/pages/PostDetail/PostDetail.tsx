@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import api from '../../services/api'; 
-import { Post } from './Post'; 
+import { Post } from '../../models/Post'; 
 const PostDetailContainer = styled.div`
   padding: 20px;
   max-width: 800px;
