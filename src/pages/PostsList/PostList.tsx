@@ -35,8 +35,8 @@ const SearchInput = styled.input`
   background-color: var(--color-background);
   color: var(--color-text);
 
-  @media (max-width: 768px) {
-    width: 100%;
+  @media (max-width: 500px) {
+    width: 90%;
   }
 `;
 
