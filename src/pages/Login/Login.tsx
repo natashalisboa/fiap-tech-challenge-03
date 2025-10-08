@@ -4,16 +4,25 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 
 const LoginContainer = styled.div`
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  margin: 0 auto;
+`;
+
+const FormWrapper = styled.div`
+  max-width: 350px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
   background: var(--color-background-card);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   color: var(--color-text);
-
   @media (max-width: 768px) {
-    padding: 20px;
+    padding: 10px;
   }
 `;
 
@@ -22,6 +31,10 @@ const Title = styled.h1`
   text-align: center;
   margin-bottom: 10px;
   color: var(--color-text);
+
+  @media (max-width: 768px) {
+    font-size: 24px;
+  }
 `;
 
 const Subtitle = styled.p`
@@ -68,7 +81,7 @@ const Button = styled.button`
   cursor: pointer;
   transition: background-color 0.2s;
 
-  box-sizing: border-box; /* Adicionado para consistência de tamanho com os inputs */
+  box-sizing: border-box;
   &:hover {
     opacity: 0.9;
   }
@@ -140,19 +153,21 @@ const handleLogin = async (event: React.FormEvent) => {
 
   return (
     <LoginContainer>
+      <FormWrapper>
         <Title>Portal Múltipla Escolha</Title>
         <Subtitle>Faça login para acessar o blog.</Subtitle>
         <Form onSubmit={handleLogin}>
           <FormGroup>
             <Label htmlFor="email">Email</Label>
-            <Input type="text" id="email" name="email" value={credentials.email} onChange={handleChange}/>
+            <Input type="email" id="email" name="email" value={credentials.email} onChange={handleChange} required/>
           </FormGroup>
           <FormGroup>
             <Label htmlFor="password">Senha</Label>
-            <Input type="password" id="password" name="senha" value={credentials.senha} onChange={handleChange}/>
+            <Input type="password" id="password" name="senha" value={credentials.senha} onChange={handleChange} required/>
           </FormGroup>
           <Button type="submit">Entrar</Button>
         </Form>
+      </FormWrapper>
         {showModal && (
           <ModalOverlay onClick={() => setShowModal(false)}>
             <ModalContent onClick={(e) => e.stopPropagation()}>

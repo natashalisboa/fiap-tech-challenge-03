@@ -21,10 +21,11 @@ const FormContainer = styled.div`
 
 const FormTitle = styled.h1`
   text-align: center;
+  font-size: 2.5rem;
   margin-bottom: 30px;
-  color: var(--color-primary);
+
   @media (max-width: 768px) {
-    font-size: 1.8rem;
+    font-size: 2rem;
   }
 `;
 
