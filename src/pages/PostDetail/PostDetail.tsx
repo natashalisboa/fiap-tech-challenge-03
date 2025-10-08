@@ -141,17 +141,57 @@ const PostDetail: React.FC = () => {
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim() || !userId || !postId) {
+    if (!newComment.trim() || !userId || !postId || !post) {
       alert('Você precisa estar logado e escrever algo para comentar.');
       return;
     }
 
+      const autorPost = {
+    ...post.autor,
+    cargo: post.autor.cargo ? post.autor.cargo : { cargoId: 1, tipo: "" },
+    nome: post.autor.nome ?? '',
+    email: post.autor.email ?? '',
+    senha: post.autor.senha ?? '',
+    dtCriacao: post.autor.dtCriacao ?? '',
+    dtAtualizacao: post.autor.dtAtualizacao ?? ''
+  };
+
+    const comentariosPost = Array.isArray(post.comentarios)
+    ? post.comentarios
+    : [];
+
+    const disciplinaPost = post.disciplina
+    ? post.disciplina
+    : { disciplinaId: 1, nome: "" };
+
+  const postToSend = {
+    postId: post.postId,
+    titulo: post.titulo,
+    conteudo: post.conteudo,
+    disciplina: disciplinaPost,
+    autor: autorPost,
+    comentarios: comentariosPost,
+    dtCriacao: post.dtCriacao ?? '',
+    dtAtualizacao: post.dtAtualizacao ?? ''
+  };
+
+  const comentarioToSend = {
+    conteudo: newComment,
+    autor: {
+      userId: Number(userId),
+      nome: '',
+      email: '',
+      senha: '',
+      cargo: { cargoId: 1, tipo: '' },
+      dtCriacao: '',
+      dtAtualizacao: ''
+    },
+    dtCriacao: new Date().toISOString(),
+    post: postToSend
+  };
+
     try {
-      await api.post('/comentarios', {
-        conteudo: newComment,
-        postId: Number(postId),
-        autorId: Number(userId),
-      });
+      await api.post('/comentarios', comentarioToSend);
       setNewComment('');
       // Recarrega os detalhes do post para exibir o novo comentário
       api.get(`/posts/${postId}`).then(response => {

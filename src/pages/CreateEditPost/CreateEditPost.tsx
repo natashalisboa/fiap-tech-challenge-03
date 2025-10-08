@@ -85,7 +85,28 @@ const Select = styled.select`
 const CreateEditPost: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
   const navigate = useNavigate();
-  const [post, setPost] = useState<Post | null>(null);
+  const emptyPost: Post = {
+  postId: 0,
+  titulo: '',
+  conteudo: '',
+  disciplina: { disciplinaId: 0, nome: '' },
+  autor: {
+    userId: 0,
+    nome: '',
+    email: '',
+    senha: '',
+    cargo: { cargoId: 1, tipo: '' },
+    dtCriacao: '',
+    dtAtualizacao: ''
+  },
+  dtCriacao: '',
+  dtAtualizacao: '',
+  comentarios: []
+};
+
+  const [post, setPost] = useState<Post | null>(emptyPost);
+
+  
 
   const disciplinas = [
   { disciplinaId: 1, nome: "HISTÓRIA" },
@@ -117,7 +138,7 @@ const CreateEditPost: React.FC = () => {
     if (!post) return;
 
     let autor = post.autor;
-  if (!autor) {
+  if (!autor || !autor.userId) {
     const userId = localStorage.getItem('userId');
     autor = {
       userId: Number(userId),
