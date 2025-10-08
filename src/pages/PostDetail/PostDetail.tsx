@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import api from '../../services/api'; 
+import { formatDateTime } from './dateFormatter';
 import { Post } from '../../models/Post'; 
 const PostDetailContainer = styled.div`
   padding: 20px;
@@ -32,6 +33,15 @@ const PostComments = styled.div`
   padding-top: 20px;
 `;
 
+const Comment = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 15px;
+`;
+
+const CommentContent = styled.div``;
+
 const PostContent = styled.div`
   font-size: 1.2rem;
   line-height: 1.6;
@@ -52,11 +62,55 @@ const EditLink = styled(Link)`
   text-decoration: none;
 `;
 
+const CommentForm = styled.form`
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const TextArea = styled.textarea`
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 1rem;
+  min-height: 100px;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: inherit;
+  resize: vertical;
+`;
+
+const Button = styled.button`
+  padding: 12px 20px;
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
+
 const PostDetail: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
   const [post, setPost] = useState<Post | null>(null);
+  const [newComment, setNewComment] = useState('');
   const navigate = useNavigate();
   const isAdmin = localStorage.getItem('adminPermission') === 'true';
+  const userId = localStorage.getItem('userId');
 
 
   useEffect(() => {
@@ -85,6 +139,29 @@ const PostDetail: React.FC = () => {
     }
   };
 
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newComment.trim() || !userId || !postId) {
+      alert('Você precisa estar logado e escrever algo para comentar.');
+      return;
+    }
+
+    try {
+      await api.post('/comentarios', {
+        conteudo: newComment,
+        postId: Number(postId),
+        autorId: Number(userId),
+      });
+      setNewComment('');
+      // Recarrega os detalhes do post para exibir o novo comentário
+      api.get(`/posts/${postId}`).then(response => {
+        setPost(response.data);
+      });
+    } catch (error) {
+      console.error('Erro ao adicionar comentário:', error);
+      alert('Falha ao adicionar o comentário.');
+    }
+  };
   return (
     <PostDetailContainer>
       <PostTitle>{post.titulo}</PostTitle>
@@ -102,17 +179,28 @@ const PostDetail: React.FC = () => {
       )}
       <PostComments>
         {post.comentarios.map(comentario => (
-          <div key={comentario.comentarioId}>
-            <strong>{comentario.autor.nome}</strong>: {comentario.conteudo}
-            <br />
-            <small>Publicado em: {comentario.dtCriacao}</small>
+          <Comment key={comentario.comentarioId}>
+            <CommentContent>
+              <strong>{comentario.autor.nome}</strong>: {comentario.conteudo}
+              <br />
+              <small>Publicado em: {formatDateTime(comentario.dtCriacao)}</small>
+            </CommentContent>
             <hr />
-          </div>
+          </Comment>
         ))}
+        {userId && (
+          <CommentForm onSubmit={handleCommentSubmit}>
+            <TextArea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Escreva seu comentário..."
+              required
+            />
+            <Button type="submit">Comentar</Button>
+          </CommentForm>
+        )}
       </PostComments>
     </PostDetailContainer>
-          //TODO: Formulário para adicionar novo comentário
-
   );
 };
 

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { FaBars, FaTimes, FaSun, FaMoon } from 'react-icons/fa'; // Certifique-se de ter react-icons instalado
-
+import { FaBars, FaTimes, FaSun, FaMoon } from 'react-icons/fa'; 
+import logo from '../../assets/logo.png';
 interface HeaderProps {
   onToggleTheme: () => void;
 }
@@ -15,6 +15,10 @@ const HeaderContainer = styled.header`
   align-items: center;
   padding: 20px;
   position: relative;
+`;
+
+const Logo = styled.img`
+  height: 50px;
 `;
 
 const StyledLink = styled(Link)`
@@ -51,7 +55,7 @@ const Nav = styled.nav<{ isOpen: boolean }>`
 
   @media (max-width: 768px) {
     flex-direction: column;
-    background-color: #ed145b;
+    background-color: black;
     position: absolute;
     top: 70px;
     left: 0;
@@ -66,20 +70,21 @@ const Nav = styled.nav<{ isOpen: boolean }>`
 const Header: React.FC<HeaderProps> = ({ onToggleTheme }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const isAdmin = localStorage.getItem('adminPermission') === 'true';
 
   return (
     <HeaderContainer>
-      {/* Adicione um logo ou título aqui se desejar */}
-      {/* <div>Logo</div> */}
+      <Link to="/postlist">
+        <Logo src={logo} alt="Múltipla Escolha Logo" />
+      </Link>
       <Hamburger onClick={() => setIsOpen(!isOpen)}>{isOpen ? <FaTimes /> : <FaBars />}</Hamburger>
       <Nav isOpen={isOpen} onClick={() => setIsOpen(false)}>
-        <StyledLink to="/login">Login</StyledLink>
         <StyledLink to="/postlist">Home</StyledLink>
-        <StyledLink to="/createpost">CreatePost</StyledLink>
-        <StyledLink to="/postdetail">PostDetail</StyledLink>
+        {isAdmin && <StyledLink to="/createpost">Criar</StyledLink>}
         <StyledLink to="/profile">Perfil</StyledLink>
+        <StyledLink to="/login">Logout</StyledLink>
         <ThemeToggleButton onClick={(e) => {
-          e.stopPropagation(); // Impede que o menu feche ao clicar no botão
+          e.stopPropagation(); 
           onToggleTheme();
           setIsDarkMode(!isDarkMode);
         }}>
