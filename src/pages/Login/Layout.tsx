@@ -1,19 +1,17 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 
 interface LayoutProps {
   children: React.ReactNode;
   onToggleTheme: () => void;
+  theme: string;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, onToggleTheme }) => {
-  const location = useLocation();
-  const showHeader = location.pathname !== '/login';
+const Layout: React.FC<LayoutProps> = ({ children, onToggleTheme, theme }) => {
 
   return (
     <>
-      {showHeader && <Header onToggleTheme={onToggleTheme} />}
+      <Header onToggleTheme={onToggleTheme} theme={theme} />
       <main>{children}</main>
     </>
   );

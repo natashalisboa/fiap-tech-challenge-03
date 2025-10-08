@@ -11,10 +11,15 @@ const LoginContainer = styled.div`
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   color: var(--color-text);
+
+  @media (max-width: 768px) {
+    padding: 20px;
+  }
 `;
 
 const Title = styled.h1`
   font-size: 28px;
+  text-align: center;
   margin-bottom: 10px;
   color: var(--color-text);
 `;
@@ -149,8 +154,8 @@ const handleLogin = async (event: React.FormEvent) => {
           <Button type="submit">Entrar</Button>
         </Form>
         {showModal && (
-          <ModalOverlay>
-            <ModalContent>
+          <ModalOverlay onClick={() => setShowModal(false)}>
+            <ModalContent onClick={(e) => e.stopPropagation()}>
               <h2>Falha no login</h2>
               <p>Email ou senha incorretos. Tente novamente.</p>
               <ModalButton onClick={() => setShowModal(false)}>Fechar</ModalButton>

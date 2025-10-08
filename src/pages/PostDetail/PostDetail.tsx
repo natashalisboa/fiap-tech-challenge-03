@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import api from '../../services/api'; 
 import { formatDateTime } from './dateFormatter';
@@ -13,6 +13,10 @@ const PostDetailContainer = styled.div`
 const PostTitle = styled.h1`
   font-size: 2.5rem;
   margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
 `;
 
 const PostCardAuthor = styled.h3`
@@ -47,19 +51,42 @@ const PostContent = styled.div`
   line-height: 1.6;
 `;
 
-const BackLink = styled(Link)`
-  display: inline-block;
-  margin-top: 20px;
-  color: #1173d4;
-  text-decoration: none;
+const BackButton = styled.button`
+ margin-top: 20px;
+  background: #1173d4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  &:hover { opacity: 0.9; }
 `;
 
-const EditLink = styled(Link)`
-  display: inline-block;
+const EditButton = styled.button`
+margin-top: 20px;
+  margin-left: 15px;
+  background: #f0ad4e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  &:hover { opacity: 0.9; }
+`;
+
+const DeleteButton = styled.button`
   margin-top: 20px;
   margin-left: 15px;
-  color: #f0ad4e; /* Cor de aviso/edição */
-  text-decoration: none;
+  background: #d9534f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  &:hover { opacity: 0.9; }
 `;
 
 const CommentForm = styled.form`
@@ -168,13 +195,11 @@ const PostDetail: React.FC = () => {
       <PostCardAuthor>Por Prof. {post.autor.nome}</PostCardAuthor>
       <PostCardDiscipline>{post.disciplina.nome}</PostCardDiscipline>
       <PostContent>{post.conteudo}</PostContent>
-      <BackLink to="/postlist">Voltar para a lista de posts</BackLink>
+      <BackButton onClick={() => navigate('/postlist')}>Voltar</BackButton>
       {isAdmin && (
         <>
-          <EditLink to={`/editpost/${post.postId}`}>Editar Post</EditLink>
-          <button style={{marginTop: 20, marginLeft: 15, background: "#d9534f", color: "white", border: "none", borderRadius: 4, padding: "8px 16px", cursor: "pointer"}} onClick={handleDelete}>
-            Excluir Post
-          </button>
+          <EditButton onClick={() => navigate(`/editpost/${post.postId}`)}>Editar Post</EditButton>
+          <DeleteButton onClick={handleDelete}>Excluir Post</DeleteButton>
         </>
       )}
       <PostComments>

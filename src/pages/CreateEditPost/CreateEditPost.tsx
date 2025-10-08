@@ -12,12 +12,20 @@ const FormContainer = styled.div`
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   color: var(--color-text);
+
+  @media (max-width: 768px) {
+    padding: 20px;
+    margin: 20px auto;
+  }
 `;
 
 const FormTitle = styled.h1`
   text-align: center;
   margin-bottom: 30px;
   color: var(--color-primary);
+  @media (max-width: 768px) {
+    font-size: 1.8rem;
+  }
 `;
 
 const Form = styled.form`

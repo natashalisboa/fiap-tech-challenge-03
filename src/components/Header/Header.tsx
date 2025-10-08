@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { FaBars, FaTimes, FaSun, FaMoon } from 'react-icons/fa'; 
 import logo from '../../assets/logo.png';
 interface HeaderProps {
+  theme: string;
   onToggleTheme: () => void;
 }
 
@@ -25,6 +26,18 @@ const StyledLink = styled(Link)`
   color: white;
   text-decoration: none;
   padding: 8px 15px;
+`;
+
+const LogoutButton = styled.button`
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px 15px;
+  font-size: inherit;
+  font-family: inherit;
+  text-decoration: none;
+  display: inline-block; /* Para alinhar corretamente com os links */
 `;
 
 const ThemeToggleButton = styled.button`
@@ -67,10 +80,18 @@ const Nav = styled.nav<{ isOpen: boolean }>`
   }
 `;
 
-const Header: React.FC<HeaderProps> = ({ onToggleTheme }) => {
+const Header: React.FC<HeaderProps> = ({ onToggleTheme, theme }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const navigate = useNavigate();
   const isAdmin = localStorage.getItem('adminPermission') === 'true';
+  const isAuthenticated = !!localStorage.getItem('authToken');
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('adminPermission');
+    localStorage.removeItem('userId');
+    navigate('/login');
+  };
 
   return (
     <HeaderContainer>
@@ -78,17 +99,19 @@ const Header: React.FC<HeaderProps> = ({ onToggleTheme }) => {
         <Logo src={logo} alt="Múltipla Escolha Logo" />
       </Link>
       <Hamburger onClick={() => setIsOpen(!isOpen)}>{isOpen ? <FaTimes /> : <FaBars />}</Hamburger>
-      <Nav isOpen={isOpen} onClick={() => setIsOpen(false)}>
+      <Nav isOpen={isOpen} onClick={(e) => { if ((e.target as HTMLElement).tagName === 'A') setIsOpen(false); }}>
         <StyledLink to="/postlist">Home</StyledLink>
         {isAdmin && <StyledLink to="/createpost">Criar</StyledLink>}
-        <StyledLink to="/profile">Perfil</StyledLink>
-        <StyledLink to="/login">Logout</StyledLink>
+        {isAuthenticated ? (
+          <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
+        ) : (
+          <StyledLink to="/login">Login</StyledLink>
+        )}
         <ThemeToggleButton onClick={(e) => {
           e.stopPropagation(); 
           onToggleTheme();
-          setIsDarkMode(!isDarkMode);
         }}>
-          {isDarkMode ? <FaSun /> : <FaMoon />}
+          {theme === 'dark' ? <FaSun /> : <FaMoon />}
         </ThemeToggleButton>
       </Nav>
     </HeaderContainer>

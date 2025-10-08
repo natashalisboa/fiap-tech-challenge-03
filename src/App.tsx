@@ -7,7 +7,6 @@ import Login from './pages/Login/Login';
 import PostList from './pages/PostsList/PostList';
 import PostDetail from './pages/PostDetail/PostDetail';
 import CreateEditPost from './pages/CreateEditPost/CreateEditPost';
-// import Profile from './pages/Profile/Profile';
 import Layout from './pages/Login/Layout';
 
 const AppContainer = styled.div`
@@ -32,17 +31,23 @@ const App: React.FC = () => {
       <GlobalStyle />
       <Router>
         <AppContainer>
-          <Layout onToggleTheme={toggleTheme}>
           <Routes>
-              <Route path="/" element={<Navigate to="/login" />} />
+            {/* Rota de Login sem o Layout/Header */}
             <Route path="/login" element={<Login />} />
-            <Route path="/postlist" element={<PostList />} />
-            <Route path="/postdetail/:postId" element={<PostDetail />} />
-            <Route path="/createpost" element={<CreateEditPost />} />
-            <Route path="/editpost/:postId" element={<CreateEditPost />} />
-              {/* <Route path="/profile" element={<Profile />} /> */}
+
+            {/* Agrupa todas as outras rotas dentro do Layout com Header */}
+            <Route path="/*" element={
+              <Layout onToggleTheme={toggleTheme} theme={theme}>
+                <Routes>
+                  <Route path="/postlist" element={<PostList />} />
+                  <Route path="/postdetail/:postId" element={<PostDetail />} />
+                  <Route path="/createpost" element={<CreateEditPost />} />
+                  <Route path="/editpost/:postId" element={<CreateEditPost />} />
+                  <Route path="/" element={<Navigate to="/postlist" />} />
+                </Routes>
+              </Layout>
+            } />
           </Routes>
-          </Layout>
         </AppContainer>
       </Router>
     </ThemeProvider>

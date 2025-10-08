@@ -15,6 +15,10 @@ const Title = styled.h1`
   text-align: center;
   font-size: 2.5rem;
   margin-bottom: 30px;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
 `;
 
 const SearchBar = styled.div`
@@ -30,6 +34,10 @@ const SearchInput = styled.input`
   font-size: 1rem;
   background-color: var(--color-background);
   color: var(--color-text);
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const PostCardsContainer = styled.div`
