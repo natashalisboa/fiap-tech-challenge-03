@@ -14,12 +14,18 @@ const HeaderContainer = styled.header`
   color: white;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 20px 20px;
   position: relative;
 `;
 
 const Logo = styled.img`
-  height: 50px;
+  height: 100px;
+  max-width: 180px;
+  object-fit: contain;
+  osition: relative;
+  margin-top: -25px;
+  margin-bottom: -20px;
+  z-index: 2;
 `;
 
 const StyledLink = styled(Link)`
